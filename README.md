@@ -81,6 +81,11 @@ Sample Response
   "recommended_meals": [...],
   "reason": "Meals selected based on predicted calorie target"
 }
+
+--  Screenshot:
+
+<img width="1137" height="686" alt="image" src="https://github.com/user-attachments/assets/07085586-2135-4349-afbe-07fc6ac519a1" />
+
 📦 Tech Stack
 
 Python
