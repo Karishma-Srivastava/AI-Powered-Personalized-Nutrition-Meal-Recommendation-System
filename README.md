@@ -1,110 +1,113 @@
 # 🍽️ Personalized Nutrition & Meal Recommendation System
 
-## 📌 Overview
+🚀 Overview
 
-This project is an end-to-end machine learning system that predicts a user's next-day nutritional needs based on historical eating patterns and generates realistic meal recommendations.
+This project builds an end-to-end machine learning system that predicts daily nutritional requirements from past intake and recommends meals accordingly.
 
 It combines:
 
-* Time-series modeling (Transformer)
-* Feature engineering
-* Constraint-based recommendation system
+Time-series modeling (LSTM)
+Classification-based ensemble correction
+Rule-based filtering for practical meal recommendations
+FastAPI deployment for real-time inference
 
----
+⚙️ Architecture
 
-## 🚀 Key Features
+Input (7-day sequence)
+        ↓
+Feature Engineering (trend, rolling stats, temporal signals)
+        ↓
+LSTM Regression Model → Predict nutrition (Calories, Protein, Carbs, Fat)
+        ↓
+LSTM Classification Model → Low / Medium / High calorie class
+        ↓
+Ensemble Adjustment
+        ↓
+Rule-based Filtering + Similarity Matching
+        ↓
+Meal Recommendation
+        ↓
+FastAPI API
 
-* 📊 **Time-Series Prediction** using Transformer (PyTorch)
-* 🧠 **Behavior Modeling** with rolling trends and nutrition ratios
-* 🍽️ **Smart Meal Recommendation Engine**
-* ⚖️ **Constraint-based Optimization** for realistic meals
-* 🧩 Multi-item meal generation (main + side)
+🧪 Model Details
 
----
+Regression Model
 
-## 🏗️ Pipeline
+LSTM (input_size = 10, hidden = 64)
+Output: 4 nutritional values
+Loss: MSE
 
-Raw Data → Feature Engineering → Sequence Builder (7-day)
-→ Transformer Model → Nutrition Prediction
-→ Food Filtering → Meal Construction → Final Recommendation
+Classification Model
 
----
+LSTM-based classifier
+Output: 3 classes (low / medium / high calorie)
+Loss: CrossEntropy
+Ensemble Strategy
 
-## 📂 Project Structure
+Classification adjusts regression output:
+Low → ×0.8
+Medium → ×1.0
+High → ×1.2
+
+📊 Evaluation
+
+Baseline:
+
+Predict next day = last day
+
+Model:
+
+~50% reduction in MSE compared to baseline
+
+⚠️ Limitations
+Model tends to regress toward mean (underestimates spikes)
+No personalization (user profile missing)
+Limited contextual features (activity, goals, preferences)
+
+🚀 API Usage
+
+Run server
+uvicorn api.main:app --reload
+Endpoint
+POST /predict
+Sample Request
+{
+  "sequence": [[[...7 days × 10 features...]]],
+  "goal": "maintain"
+}
+Sample Response
+{
+  "predicted_nutrition": [...],
+  "recommended_meals": [...],
+  "reason": "Meals selected based on predicted calorie target"
+}
+📦 Tech Stack
+
+Python
+PyTorch
+Scikit-learn
+Pandas
+FastAPI
+
 
 fitness-recommender/
-├── data/
-├── artifacts/
-├── src/
-│   ├── models/
-│   ├── pipeline/
-│   ├── inference/
-│   └── utils/
+│
 ├── api/
+│   └── main.py
+│
+├── src/
+│   ├── data/
+│   ├── models/
+│   ├── training/
+│   ├── inference/
+│
+├── artifacts/
+│   ├── models/
+│   ├── scalers/
+│
+├── data/
+│
 ├── run_train.py
 ├── run_inference.py
-
----
-
-## 🧠 Model Details
-
-* Model: Transformer Encoder
-* Input: 7-day nutrition sequence
-* Output: Next-day nutrition vector
-* Loss: MSE
-* Features:
-
-  * Macronutrients
-  * Ratios (Protein/Calories)
-  * Rolling averages
-  * Trends
-
----
-
-## 🍽️ Recommendation System
-
-Instead of direct food prediction, the system:
-
-1. Predicts nutritional target
-2. Selects best matching main dish
-3. Adds optimized side dish
-4. Applies constraints for realism
-
----
-
-## 📊 Results
-
-* Stable convergence during training
-* No overfitting observed
-* Realistic multi-item meal recommendations generated
-
----
-
-## 💡 Key Learnings
-
-* Importance of feature engineering in time-series data
-* Difference between mathematical optimization vs real-world usability
-* Role of constraints in recommendation systems
-
----
-
-## 🔮 Future Work
-
-* Full-day meal planning (breakfast/lunch/dinner)
-* Goal-based diet (weight loss / muscle gain)
-* Real-world data integration (FitRec)
-
----
-
-## ⚙️ Tech Stack
-
-* Python
-* PyTorch
-* Pandas, NumPy
-* Scikit-learn
-
----
-
-## 👩‍💻 Author
-
-Karishma Srivastava
+├── README.md
+└── requirements.txt
