@@ -1,4 +1,4 @@
-# 🍽️ Personalized Nutrition & Meal Recommendation System
+# 🍽️ AI-Powered Personalized Nutrition & Meal Recommendation System (LSTM + Ensemble + FastAPI)
 
 🚀 Overview
 
